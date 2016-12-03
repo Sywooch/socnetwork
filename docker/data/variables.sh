@@ -1,7 +1,7 @@
 #!/bin/bash
 export APP_NAME='bps'
 export HTTP_NAME=$APP_NAME'-http'
-export DOMAIN_NAME=$APP_NAME'.dev'
+export DOMAIN_NAME=$APP_NAME'.it-init.com'
 export DB_NAME=$APP_NAME
 export DB_USER=$APP_NAME
 export DB_PASSWORD='123456'
