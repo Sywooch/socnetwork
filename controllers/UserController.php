@@ -2,17 +2,20 @@
 
 namespace app\controllers;
 
-use Yii;
+use yii;
 use app\components\FrontendController;
 
 class UserController extends FrontendController
 {
+
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
-        return parent::behaviors();
+        return [
+            
+        ];
     }
 
     public function actionIndex()

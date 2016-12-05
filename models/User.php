@@ -16,6 +16,13 @@ use app\models\File;
  *
  * @property integer $id
  * @property string $username
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $country
+ * @property string $city
+ * @property integer $gender
+ * @property integer $skype
+ * @property integer $about
  * @property string $password_hash
  * @property string $password_reset_token
  * @property string $email
@@ -29,6 +36,7 @@ use app\models\File;
  */
 class User extends \app\components\extend\Model implements IdentityInterface
 {
+
     const STATUS_DELETED = 0;
     const STATUS_DISABLED = 1;
     const STATUS_ACTIVE = 10;
@@ -87,23 +95,24 @@ class User extends \app\components\extend\Model implements IdentityInterface
     public function rules()
     {
         return [
-            [['avatar'], 'file', 'extensions' => File::imageExtensions(true), 'skipOnEmpty' => true],
-            [['username', 'email'], 'required'],
-            [['password'], 'checkEmptyPassword', 'skipOnEmpty' => false],
-            [['status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
-            [['auth_key', 'password'], 'string', 'max' => 32],
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['role', 'default', 'value' => self::ROLE_USER],
-            ['username', 'filter', 'filter' => 'trim'],
-            ['username', 'unique', 'targetClass' => 'app\models\User'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
-            ['email', 'filter', 'filter' => 'trim'],
-            ['email', 'required'],
-            ['email', 'email'],
-            ['email', 'unique', 'targetClass' => 'app\models\User'],
-            ['password', 'string', 'min' => 6],
-            ['rbacRole', 'fakeRule'],
+                [['avatar'], 'file', 'extensions' => File::imageExtensions(true), 'skipOnEmpty' => true],
+                [['first_name', 'last_name', 'email'], 'required'],
+                [['password'], 'checkEmptyPassword', 'skipOnEmpty' => false],
+                [['status', 'created_at', 'updated_at'], 'integer'],
+                [['username', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
+                [['auth_key', 'password'], 'string', 'max' => 32],
+                ['status', 'default', 'value' => self::STATUS_ACTIVE],
+                ['role', 'default', 'value' => self::ROLE_USER],
+                [['username', 'email'], 'filter', 'filter' => 'trim'],
+                [['email'], 'unique', 'targetClass' => 'app\models\User'],
+                ['username', 'string', 'min' => 2, 'max' => 255],
+                ['email', 'filter', 'filter' => 'trim'],
+                ['email', 'required'],
+                ['email', 'email'],
+                ['email', 'unique', 'targetClass' => 'app\models\User'],
+                ['password', 'string', 'min' => 6],
+                [['first_name', 'last_name', 'country', 'city', 'skype', 'gender', 'about'], 'string', 'max' => 200],
+                ['rbacRole', 'fakeRule'],
         ];
     }
 
@@ -121,6 +130,13 @@ class User extends \app\components\extend\Model implements IdentityInterface
     {
         $ar = [
             'username' => yii::$app->l->t('username'),
+            'first_name' => yii::$app->l->t('first name'),
+            'last_name' => yii::$app->l->t('last name'),
+            'country' => yii::$app->l->t('country'),
+            'city' => yii::$app->l->t('city'),
+            'skype' => yii::$app->l->t('skype account'),
+            'gender' => yii::$app->l->t('gender'),
+            'about' => yii::$app->l->t('about me'),
             'password' => yii::$app->l->t('password'),
             'email' => yii::$app->l->t('email'),
             'avatar' => yii::$app->l->t('avatar'),
@@ -136,6 +152,7 @@ class User extends \app\components\extend\Model implements IdentityInterface
     }
 
     /* relations */
+
     public function getAvatarFile()
     {
         return $this->hasOne(File::className(), ['name' => 'avatar']);
@@ -147,6 +164,7 @@ class User extends \app\components\extend\Model implements IdentityInterface
     }
 
     /* relations end */
+
     public function checkEmptyPassword($attribute, $param)
     {
         if (($this->isNewRecord || !$this->password_hash || !$this->auth_key) && trim($this->$attribute) == '') {
@@ -325,7 +343,7 @@ class User extends \app\components\extend\Model implements IdentityInterface
         if (!array_key_exists('class', $options)) {
             $options['class'] = 'user-assignments-modal-button';
         } else {
-            $options['class'].=' user-assignments-modal-button';
+            $options['class'] .= ' user-assignments-modal-button';
         }
         $options['onclick'] = 'showUserRolesModal($(this));return false;';
         $options['data'] = [
@@ -391,7 +409,7 @@ class User extends \app\components\extend\Model implements IdentityInterface
         if (count($item->items) > 0) {
             foreach ($item->items[Item::TYPE_ROLE] as $k) {
                 $options['data'] = ['name' => $k->name];
-                $tmp.= Html::tag('div', $k->getTitle(), $options);
+                $tmp .= Html::tag('div', $k->getTitle(), $options);
             }
         }
         return Html::tag('div', ($tmp === '' ? Html::tag('div', '', ['class' => 'text-danger']) : $tmp), [

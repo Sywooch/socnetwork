@@ -2,7 +2,7 @@
 
 namespace app\components\extend;
 
-use Yii;
+use yii;
 use app\components\extend\Html;
 
 class Model extends \yii\db\ActiveRecord

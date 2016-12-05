@@ -23,7 +23,7 @@ class UploaderWidget extends Widget
     public $limit = 100; //max nr of files
     public $maxSize = 500; //max file size in mb
     public $extensions; //list of extensions allowed, ex: 'png,jpg,gif' 
-    public $showThumbs = true;
+    public $showThumbs = false;
     public $model;
     public $template;
     public $attribute;

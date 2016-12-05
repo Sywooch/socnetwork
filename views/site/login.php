@@ -8,6 +8,7 @@ use app\components\extend\ActiveForm;
 /* @var $model app\models\LoginForm */
 
 $this->title = yii::$app->l->t('authorization', ['update' => false]);
+$this->params['pageHeader'] = yii::$app->l->t('authorization');
 ?>
 
 <?php
@@ -18,7 +19,7 @@ $form = ActiveForm::begin([
         ]);
 ?>
 
-<?= Html::tag('h1', yii::$app->l->t('authorization')) ?>
+
 <?=
 $form->field($model, 'username')->textInput([
     'placeholder' => yii::$app->l->t('username', ['update' => false]),

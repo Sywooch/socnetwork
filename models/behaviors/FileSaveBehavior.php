@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Description of FileSaveBehavior
  *
@@ -18,6 +19,7 @@ use yii\web\UploadedFile;
 
 class FileSaveBehavior extends \yii\base\Behavior
 {
+
     public $fileAttributes;
 
     /**
@@ -72,48 +74,48 @@ class FileSaveBehavior extends \yii\base\Behavior
                             }
                             $fileModel->addDestination($model->shortClassName);
                         }]);
-                            if ((int) strlen($model->{$attribute}) != 0) {
-                                $this->owner->{$attribute} = $model->{$attribute};
-                            } else {
-                                if (!$model->isNewRecord) {
-                                    $this->owner->{$attribute} = $model->oldAttributes[$attribute];
-                                }
-                            }
+                    if ((int) strlen($model->{$attribute}) != 0) {
+                        $this->owner->{$attribute} = $model->{$attribute};
+                    } else {
+                        if (!$model->isNewRecord) {
+                            $this->owner->{$attribute} = $model->oldAttributes[$attribute];
                         }
                     }
                 }
             }
+        }
+    }
 
-            public function afterDelete()
-            {
-                $this->deleteAttributeFiles();
-            }
+    public function afterDelete()
+    {
+        $this->deleteAttributeFiles();
+    }
 
-            /**
-             * set deleted status for file record
-             */
-            public function deleteAttributeFiles()
-            {
-                if ($this->fileAttributes) {
-                    foreach ($this->fileAttributes as $attribute) {
-                        if ($file = File::find()->where(['name' => $this->owner->{$attribute}])->one()) {
-                            $file->setDeleted($this->owner->shortClassName);
-                        }
-                    }
+    /**
+     * set deleted status for file record
+     */
+    public function deleteAttributeFiles()
+    {
+        if ($this->fileAttributes) {
+            foreach ($this->fileAttributes as $attribute) {
+                if ($file = File::find()->where(['name' => $this->owner->{$attribute}])->one()) {
+                    $file->setDeleted($this->owner->shortClassName);
                 }
             }
+        }
+    }
 
-            /**
-             * try to load file attached to current model attribute
-             * @param string $attribute
-             * @return File
-             */
-            public function getFile($attribute = null)
-            {
-                if ($attribute && $file = File::find()->where(['status' => File::STATUS_UPLOADED, 'name' => $this->owner->{$attribute}])->one()) {
-                    return $file;
-                }
-                return (new File());
-            }
+    /**
+     * try to load file attached to current model attribute
+     * @param string $attribute
+     * @return File
+     */
+    public function getFile($attribute = null)
+    {
+        if ($attribute && $file = File::find()->where(['status' => File::STATUS_UPLOADED, 'name' => $this->owner->{$attribute}])->one()) {
+            return $file;
+        }
+        return (new File());
+    }
 
-        }        
+}

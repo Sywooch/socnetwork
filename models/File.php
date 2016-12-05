@@ -444,7 +444,7 @@ class File extends \app\components\extend\Model
      */
     public static function imageExtensions($asString = false)
     {
-        $ext = ['png', 'jpg', 'jpeg', 'gif', 'wbmp', 'xbm'];
+        $ext = ['png', 'jpg', 'jpeg', 'gif'];
         return $asString ? implode(',', $ext) : $ext;
     }
 

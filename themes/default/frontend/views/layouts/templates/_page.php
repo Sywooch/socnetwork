@@ -30,6 +30,7 @@ use app\components\extend\Html;
             </div>
             <div class="col-md-9 col-sm-8 content-container">
                 <div class="content">
+                    <?= $this->render('../_page_header'); ?>
                     <?= $content; ?>
                 </div>
             </div>

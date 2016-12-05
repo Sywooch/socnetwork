@@ -8,14 +8,12 @@ use app\components\extend\Html;
 /* @var $exception Exception */
 
 $this->title = $name;
+$this->params['pageHeader'] = nl2br(Html::encode($message));
 ?>
 
 
 
 <div class="site-error">
-    <h2 class="text-muted text-center">
-        <?= nl2br(Html::encode($message)) ?>
-    </h2>
 
     <p class="text-center">
         <?= yii::$app->l->t('The above error occurred while the Web server was processing your request.') ?>

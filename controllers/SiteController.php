@@ -118,8 +118,9 @@ class SiteController extends FrontendController
     {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post())) {
+            $this->ajaxValidation($model);
             if ($user = $model->signup()) {
-                if (Yii::$app->getUser()->login($user)) {
+                if (yii::$app->getUser()->login($user)) {
                     return $this->goHome();
                 }
             }

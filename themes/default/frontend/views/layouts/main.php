@@ -22,22 +22,24 @@ $this->beginPage();
         <title><?= Html::encode(Helper::data()->getParam('pageTitle', $this->title)) ?></title>
         <?php $this->head() ?>
     </head>
-    <body data-notification-top-margin="50" >
-        <?php
-        $this->beginBody();
-        if (yii::$app->controller->isPjaxAction) {
-            echo $this->render('_loading');
-            Pjax::begin();
-        }
-        $page = $this->render('templates/' . ($isHomePage ? '_home' : '_page'), ['content' => $content]);
-        echo Html::tag('div', $page, ['class' => ($isHomePage ? 'welcome' : '')]);
-        if (yii::$app->controller->isPjaxAction) {
-            Pjax::end();
-        }
-        ?>
-        <div class="text-danger test-pjax-status" style="z-index: 1055;position: fixed;top: 0;right: 10px;top: 5px;font-weight: bolder!important;">
+    <body data-notification-top-margin="0" >
+        <div class="wrap">
+            <?php
+            $this->beginBody();
+            if (yii::$app->controller->isPjaxAction) {
+                echo $this->render('_loading');
+                Pjax::begin();
+            }
+            $page = $this->render('templates/' . ($isHomePage ? '_home' : '_page'), ['content' => $content]);
+            echo Html::tag('div', $page, ['class' => ($isHomePage ? 'welcome' : '')]);
+            if (yii::$app->controller->isPjaxAction) {
+                Pjax::end();
+            }
+            ?>
+            <div class="text-danger test-pjax-status" style="z-index: 1055;position: fixed;top: 0;right: 10px;top: 5px;font-weight: bolder!important;">
+            </div>
+            <?php $this->endBody() ?>
         </div>
-        <?php $this->endBody() ?>
     </body>
 </html>
 <?php $this->endPage(); ?>
