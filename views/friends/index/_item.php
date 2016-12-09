@@ -6,7 +6,7 @@ use app\components\extend\Url;
 use app\models\File;
 
 /* @var $model \app\models\UserFriends */
-$user = $model->user;
+$user = $model->user_id == yii::$app->user->id ? $model->sender : $model->user;
 ?>
 <li>
     <div class="row">
