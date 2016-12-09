@@ -104,7 +104,7 @@ $this->params['breadcrumbs'][] = yii::$app->l->t('User Friends');
                         <?= $user->getAttributeLabel('gender'); ?>
                     </div>
                     <div class="col-md-9 col-sm-9">
-                        <?= $user->gender ?>
+                        <?= $user->getGenderLabels($user->gender); ?>
                     </div>
                 </div>
             </li>
