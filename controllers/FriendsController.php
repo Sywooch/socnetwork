@@ -40,7 +40,7 @@ class FriendsController extends FrontendController
      */
     public function actionInvite($id)
     {
-        $model = $this->findSentModel($id);
+        $model = $this->findModel($id);
         if (!$model) {
             $model = new UserFriends();
             $model->user_id = (int) $id;
@@ -55,7 +55,7 @@ class FriendsController extends FrontendController
      */
     public function actionCancel($id)
     {
-        $model = $this->findSentModel($id);
+        $model = $this->findModel($id);
         if ($model) {
             $this->setMessage(($model->delete() ? 'success' : 'error'));
         }
@@ -93,39 +93,22 @@ class FriendsController extends FrontendController
     /**
      * Finds the UserFriends model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $senderId
+     * @param integer $friendId
      * @return UserFriends the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($senderId)
+    protected function findModel($friendId)
     {
         $q = UserFriends::find();
-        $q->andWhere('user_id=:uid AND sender_id=:sid', [
+        $q->andWhere('(user_id=:uid AND sender_id=:sid) OR (sender_id=:uid AND user_id=:sid)', [
             'uid' => yii::$app->user->id,
-            'sid' => (int) $senderId,
+            'sid' => (int) $friendId,
         ]);
         if (($model = $q->one()) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-
-    /**
-     * Finds the UserFriends model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $receiverId
-     * @return UserFriends the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findSentModel($receiverId)
-    {
-        $q = UserFriends::find();
-        $q->andWhere('user_id=:uid AND sender_id=:sid', [
-            'uid' => (int) $receiverId,
-            'sid' => yii::$app->user->id,
-        ]);
-        return $q->one();
     }
 
 }

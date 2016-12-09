@@ -6,7 +6,7 @@ use app\components\extend\Url;
 use app\models\File;
 
 /* @var $model \app\models\UserFriends */
-$user = $model->user_id == yii::$app->user->id ? $model->sender : $model->user;
+$friend = $model->user_id == yii::$app->user->id ? $model->sender : $model->user;
 ?>
 <li>
     <div class="row">
@@ -14,7 +14,7 @@ $user = $model->user_id == yii::$app->user->id ? $model->sender : $model->user;
             <a href="#">
                 <span class="photo">
                     <?=
-                    $user->renderAvatar([
+                    $friend->renderAvatar([
                         'size' => File::SIZE_ORIGINAL
                     ]);
                     ?>
@@ -22,7 +22,7 @@ $user = $model->user_id == yii::$app->user->id ? $model->sender : $model->user;
             </a>
         </div>
         <div class="col-md-8 col-sm-7 col-xs-7">
-            <?= Html::a($user->fullName, Url::to(['/user/view', 'id' => $user->id])) ?>
+            <?= Html::a($friend->fullName, Url::to(['/user/view', 'id' => $friend->id])) ?>
             <span><?= yii::$app->l->t('circle 1') ?></span>
             <?=
             Html::a(yii::$app->l->t('write a message'), '#', [
@@ -37,25 +37,25 @@ $user = $model->user_id == yii::$app->user->id ? $model->sender : $model->user;
                     'onclick' => 'Friends.delete($(this));return false;',
                     'class' => 'remove',
                     'data' => [
-                        'url' => Url::to(['delete', 'id' => $model->sender_id]),
+                        'url' => Url::to(['delete', 'id' => $friend->primaryKey]),
                         'confirm-message' => yii::$app->l->t('delete friend'),
                     ]
                 ]);
             } else {
-                $userIsReceiver = ($model->sender_id != yii::$app->user->id);
-                echo $userIsReceiver ? Html::a('<span>' . yii::$app->l->t('accept friend') . '</span><i class="icon">delete</i>', '#', [
+                $friendIsReceiver = ($model->sender_id != yii::$app->user->id);
+                echo $friendIsReceiver ? Html::a('<span>' . yii::$app->l->t('accept friend') . '</span><i class="icon">delete</i>', '#', [
                             'onclick' => 'Friends.accept($(this));return false;',
                             'class' => 'add',
                             'data' => [
-                                'url' => Url::to(['accept', 'id' => $model->sender_id]),
+                                'url' => Url::to(['accept', 'id' => $friend->primaryKey]),
                                 'confirm-message' => yii::$app->l->t('accept friend'),
                             ]
                         ]) : '';
-                echo Html::a('<span>' . yii::$app->l->t(($userIsReceiver ? 'reject friend' : 'cancel request')) . '</span><i class="icon">delete</i>', '#', [
+                echo Html::a('<span>' . yii::$app->l->t(($friendIsReceiver ? 'reject friend' : 'cancel request')) . '</span><i class="icon">delete</i>', '#', [
                     'onclick' => 'Friends.reject($(this));return false;',
                     'class' => 'remove',
                     'data' => [
-                        'url' => Url::to([($userIsReceiver ? 'reject' : 'cancel'), 'id' => ($userIsReceiver ? $model->sender_id : $model->user_id)]),
+                        'url' => Url::to([($friendIsReceiver ? 'reject' : 'cancel'), 'id' => $friend->primaryKey]),
                         'confirm-message' => yii::$app->l->t('reject friend'),
                     ]
                 ]);
