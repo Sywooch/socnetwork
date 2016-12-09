@@ -45,9 +45,9 @@ class FriendsController extends FrontendController
             $model = new UserFriends();
             $model->user_id = (int) $id;
             $model->sender_id = yii::$app->user->id;
-            $model->status = UserFriends::STATUS_REQUEST;
-            $this->setMessage(($model->save() ? 'success' : 'error'));
         }
+        $model->status = UserFriends::STATUS_REQUEST;
+        $this->setMessage(($model->save() ? 'success' : 'error'));
     }
 
     /**
