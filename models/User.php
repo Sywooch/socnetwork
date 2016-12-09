@@ -7,9 +7,10 @@ use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\web\IdentityInterface;
 use app\components\extend\Html;
-use \yii\rbac\Item;
+use yii\rbac\Item;
 use app\modules\admin\components\rbac\ItemHelper;
 use app\models\File;
+use settings\UserSettings;
 
 /**
  * User model
@@ -82,6 +83,9 @@ class User extends \app\components\extend\Model implements IdentityInterface
     {
         return [
             TimestampBehavior::className(),
+            'settings' => [
+                'class' => settings\UserSettings::className(),
+            ],
             'saveFiles' => [
                 'class' => behaviors\FileSaveBehavior::className(),
                 'fileAttributes' => ['avatar']
@@ -196,7 +200,18 @@ class User extends \app\components\extend\Model implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => trim($username), 'status' => self::STATUS_ACTIVE]);
+    }
+
+    /**
+     * Finds user by username
+     *
+     * @param string $email
+     * @return static|null
+     */
+    public static function findByEmail($email)
+    {
+        return static::findOne(['email' => trim($email), 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -368,7 +383,11 @@ class User extends \app\components\extend\Model implements IdentityInterface
 
     public function saveRbacRoles()
     {
-        if (yii::$app->user->can('rbac-assignment') && $this->rbacRole) {
+        $defaultRole = $this->getSetting('default_user_role');
+        if (!$this->rbacRole && $defaultRole) {
+            $this->rbacRole = $defaultRole;
+        }
+        if ($this->rbacRole && (yii::$app->user->can('rbac-assignment') || $this->rbacRole == $defaultRole)) {
             (new ItemHelper())->revokeAll($this->primaryKey);
             foreach ($this->rbacRole as $k => $v) {
                 $item = new ItemHelper(['name' => $v]);
@@ -445,7 +464,7 @@ class User extends \app\components\extend\Model implements IdentityInterface
      */
     public function getFullName()
     {
-        return $this->username;
+        return $this->first_name . ' ' . $this->last_name;
     }
 
     /**
@@ -463,6 +482,30 @@ class User extends \app\components\extend\Model implements IdentityInterface
             $options['alt'] = $this->username;
         if ($image = $this->getFile('avatar'))
             return $image->renderImage($options);
+    }
+
+    /**
+     * get friends query
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFriends()
+    {
+        return UserFriends::find()->where('(user_id=:uid OR sender_id=:uid) AND status=:stat', [
+                    'uid' => $this->id,
+                    'stat' => UserFriends::STATUS_IS_FRIEND,
+        ]);
+    }
+
+    /**
+     * check if user is my friend (by id)
+     * @param type $id
+     * @return type
+     */
+    public function getIsFriendToMe($id)
+    {
+        return $this->getFriends()->andWhere('(user_id=:ismyfriendid OR sender_id=:ismyfriendid)', [
+                    'ismyfriendid' => $this->id,
+                ])->one();
     }
 
 }

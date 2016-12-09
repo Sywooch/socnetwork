@@ -4,9 +4,11 @@ namespace app\components\extend;
 
 use yii;
 use app\components\extend\Html;
+use yii\db\ActiveRecord as BaseModel;
 
-class Model extends \yii\db\ActiveRecord
+class Model extends BaseModel
 {
+
     public $shortClassName;
     public $wasValidated;
 
@@ -30,7 +32,7 @@ class Model extends \yii\db\ActiveRecord
             return $errors;
         $tmp = '';
         foreach ($errors as $k => $v) {
-            $tmp.= Html::tag('div', ' - ' . $v[0]);
+            $tmp .= Html::tag('div', ' - ' . $v[0]);
         }
         return $tmp;
     }

@@ -23,9 +23,15 @@ use app\models\User;
         ?>
     </div>
     <div class="col-md-9">
-        <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'first_name') ?>
+        <?= $form->field($model, 'last_name') ?>
         <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'country') ?>
+        <?= $form->field($model, 'city') ?>
+        <?= $form->field($model, 'skype') ?>
+        <?= $form->field($model, 'gender') ?>
+        <?= $form->field($model, 'about') ?>
 
         <?php if ($model->scenario != 'profile'): ?>
             <?php

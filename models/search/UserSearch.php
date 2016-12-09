@@ -12,6 +12,7 @@ use app\models\User;
  */
 class UserSearch extends User
 {
+
     public $rbacRole;
 
     /**
@@ -20,9 +21,9 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'role', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['rbacRole'], 'string'],
-            [['rbacRole', 'username', 'auth_key', 'password_hash', 'password_reset_token', 'email'], 'safe'],
+                [['id', 'role', 'status', 'created_at', 'updated_at'], 'integer'],
+                [['rbacRole'], 'string'],
+                [['rbacRole', 'username', 'first_name', 'last_name', 'auth_key', 'password_hash', 'password_reset_token', 'email'], 'safe'],
         ];
     }
 
@@ -62,8 +63,6 @@ class UserSearch extends User
         if ((!$this->load($params) && $this->validate())) {
             return $dataProvider;
         }
-
-
         $query->andFilterWhere([
             'id' => $this->id,
             'status' => $this->status,
@@ -73,9 +72,37 @@ class UserSearch extends User
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])
+                ->andFilterWhere(['like', 'first_name', $this->first_name])
+                ->andFilterWhere(['like', 'last_name', $this->last_name])
                 ->andFilterWhere(['like', 'auth_key', $this->auth_key])
                 ->andFilterWhere(['like', 'password_hash', $this->password_hash])
                 ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
+                ->andFilterWhere(['like', 'email', $this->email]);
+
+        return $dataProvider;
+    }
+
+    /**
+     * Creates data provider instance with search query applied
+     *
+     * @param array $params
+     *
+     * @return ActiveDataProvider
+     */
+    public function searchPeople($params)
+    {
+        $query = User::find();
+        $query->andWhere(['status' => User::STATUS_ACTIVE]);
+        $query->andWhere('id!=:uid', [
+            'uid' => yii::$app->user->id
+        ]);
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+        $this->setAttributes($params, true);
+        $query->andFilterWhere(['like', 'username', $this->username])
+                ->andFilterWhere(['like', 'first_name', $this->first_name])
+                ->andFilterWhere(['like', 'last_name', $this->last_name])
                 ->andFilterWhere(['like', 'email', $this->email]);
 
         return $dataProvider;

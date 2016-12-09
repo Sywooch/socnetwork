@@ -4,9 +4,10 @@
  */
 
 /* @var $this yii\web\View */
-/* @var $generator yii\gii\generators\model\Generator */
+/* @var $generator app\templates\gii\model\Generator */
 /* @var $tableName string full table name */
 /* @var $className string class name */
+/* @var $queryClassName string query class name */
 /* @var $tableSchema yii\db\TableSchema */
 /* @var $labels string[] list of attribute labels (name => label) */
 /* @var $rules string[] list of validation rules */
@@ -17,8 +18,8 @@ echo "<?php\n";
 
 namespace <?= $generator->ns ?>;
 
-use Yii;
-    
+use yii;
+
 /**
  * This is the model class for table "<?= $generator->generateTableName($tableName) ?>".
  *
@@ -34,7 +35,6 @@ use Yii;
  */
 class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
-    
     /**
      * @inheritdoc
      */
@@ -58,7 +58,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
      */
     public function rules()
     {
-        return [<?= "\n            " . implode(",\n            ", $rules) . "\n        " ?>];
+        return [<?= "\n            " . implode(",\n            ", $rules) . ",\n        " ?>];
     }
 
     /**
@@ -82,5 +82,18 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
         <?= $relation[0] . "\n" ?>
     }
 <?php endforeach; ?>
-
+<?php if ($queryClassName): ?>
+<?php
+    $queryClassFullName = ($generator->ns === $generator->queryNs) ? $queryClassName : '\\' . $generator->queryNs . '\\' . $queryClassName;
+    echo "\n";
+?>
+    /**
+     * @inheritdoc
+     * @return <?= $queryClassFullName ?> the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new <?= $queryClassFullName ?>(get_called_class());
+    }
+<?php endif; ?>
 }

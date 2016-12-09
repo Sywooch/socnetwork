@@ -22,7 +22,7 @@ $form = ActiveForm::begin([
 
 <?=
 $form->field($model, 'username')->textInput([
-    'placeholder' => yii::$app->l->t('username', ['update' => false]),
+    'placeholder' => yii::$app->l->t('email', ['update' => false]),
     'class' => 'form-control'
 ])->label('');
 ?>

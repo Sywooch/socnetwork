@@ -22,7 +22,7 @@ $this->params['pageHeader'] = Html::tag('h1', yii::$app->l->t('authorization'));
 
         <?=
         $form->field($model, 'username')->textInput([
-            'placeholder' => yii::$app->l->t('username', ['update' => false]),
+            'placeholder' => yii::$app->l->t('email', ['update' => false]),
             'class' => 'form-control'
         ])->label('');
         ?>

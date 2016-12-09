@@ -1,0 +1,2 @@
+source data/variables.sh;
+docker stop $HTTP_NAME

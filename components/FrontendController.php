@@ -73,4 +73,22 @@ class FrontendController extends Controller
         return $this->allowActions = array_merge($this->allowActions, $actions);
     }
 
+    /**
+     * @param object $model
+     * @return mixed
+     */
+    public function saveModel($model)
+    {
+        if ($model->load(yii::$app->request->post())) {
+            $this->ajaxValidation($model);
+            if ($model->save()) {
+                $this->setMessage('success');
+                return $this->refresh();
+            } else {
+                $this->setMessage('error');
+                return $this->refresh();
+            }
+        }
+    }
+
 }

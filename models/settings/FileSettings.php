@@ -7,12 +7,12 @@
 
 namespace app\models\settings;
 
-use Yii;
+use yii;
 use app\models\Settings;
 use app\models\behaviors\SettingsBehavior;
 use app\models\File;
 use app\components\extend\Html;
-use \app\components\extend\Model as BaseModel;
+use app\components\extend\Model as BaseModel;
 
 class FileSettings extends SettingsBehavior
 {
