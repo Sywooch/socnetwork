@@ -67,6 +67,10 @@ class FriendsController extends FrontendController
     public function actionAccept($id)
     {
         $model = $this->findModel($id);
+        if ($model->sender_id == yii::$app->user_id) {
+            $this->setMessage('error', yii::$app->l->t('cheating is not fair'));
+            return null;
+        }
         $model->status = UserFriends::STATUS_IS_FRIEND;
         $this->setMessage(($model->save() ? 'success' : 'error'));
     }
