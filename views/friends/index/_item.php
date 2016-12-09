@@ -3,7 +3,7 @@
 use app\components\extend\Html;
 use app\models\UserFriends;
 use app\components\extend\Url;
-use File;
+use app\models\File;
 
 /* @var $model \app\models\UserFriends */
 $user = $model->user;
