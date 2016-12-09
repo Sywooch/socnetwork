@@ -21,8 +21,11 @@ class UserWidget extends Widget
 
     public function run()
     {
+        $isSearchWidget = yii::$app->request->post('userSearchWidget');
         $this->model = new User;
-        $this->model->load(yii::$app->request->post());
+        if ($isSearchWidget) {
+            $this->model->load(yii::$app->request->post());
+        }
         return $this->render($this->view, [
                     'model' => $this->model,
                     'dataProvider' => $this->getDataProvider()
@@ -36,7 +39,7 @@ class UserWidget extends Widget
             case 'search':
                 $userPost = yii::$app->request->post('User');
                 $isSearchWidget = yii::$app->request->post('userSearchWidget');
-                return $userPost ? $searchModel->searchPeople($userPost) : null;
+                return ($userPost && $isSearchWidget) ? $searchModel->searchPeople($userPost) : null;
         }
     }
 

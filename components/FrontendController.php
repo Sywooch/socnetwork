@@ -86,6 +86,7 @@ class FrontendController extends Controller
             } else {
                 $this->setMessage('error');
             }
+            return true;
         }
     }
 

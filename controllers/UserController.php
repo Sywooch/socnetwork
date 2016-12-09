@@ -34,7 +34,12 @@ class UserController extends FrontendController
     public function actionSettings()
     {
         $model = yii::$app->user->identity;
-        $this->saveModel($model);
+        $isSearchWidget = yii::$app->request->post('userSearchWidget');
+        if (!$isSearchWidget) {
+            if ($this->saveModel($model)) {
+                return $this->refresh();
+            }
+        }
         return $this->render('settings', [
                     'model' => $model
         ]);

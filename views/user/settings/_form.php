@@ -18,18 +18,21 @@ $form = ActiveForm::begin([
 ?>
 <div class="row">
     <div class="col-md-12 col-sm-12">
-        <!--<div class="row">-->
-        <!--<div class="col-md-3 ">-->
-        <label class="control-label">
-            <?= $model->getAttributeLabel('avatar'); ?>
-        </label>
-        <?=
-        $model->renderAvatar([
-            'size' => app\models\File::SIZE_MD
-        ]);
-        ?>
-        <!--            </div>
-                </div>-->
+        <div class="row">
+            <div class="text-right col-md-2">
+                <label class="control-label">
+                    <?= $model->getAttributeLabel('avatar'); ?>
+                </label>
+            </div>
+            <div class="text-left col-md-10">
+                <?=
+                $model->renderAvatar([
+                    'size' => app\models\File::SIZE_LG
+                ]);
+                ?>
+            </div>
+        </div>
+        <div class="clearfix"></div>
         <?= $form->field($model, 'avatar')->widget(UploaderWidget::className(), ['template' => '_default'])->label(''); ?>
         <?= $form->field($model, 'first_name') ?>
         <?= $form->field($model, 'last_name') ?>
