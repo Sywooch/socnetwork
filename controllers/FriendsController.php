@@ -55,10 +55,7 @@ class FriendsController extends FrontendController
      */
     public function actionCancel($id)
     {
-        $model = $this->findModel($id);
-        if ($model) {
-            $this->setMessage(($model->delete() ? 'success' : 'error'));
-        }
+        return $this->actionDelete($id);
     }
 
     /**
@@ -80,9 +77,7 @@ class FriendsController extends FrontendController
      */
     public function actionReject($id)
     {
-        $model = $this->findModel($id);
-        $model->status = UserFriends::STATUS_REJECTED;
-        $this->setMessage(($model->save() ? 'success' : 'error'));
+        return $this->actionDelete($id);
     }
 
     /**
@@ -90,8 +85,10 @@ class FriendsController extends FrontendController
      */
     public function actionDelete($id)
     {
-        $model = $this->findModel($id);
-        $this->setMessage(($model->delete() ? 'success' : 'error'));
+        $model = $this->findModel($id, false);
+        if ($model) {
+            $this->setMessage(($model->delete() ? 'success' : 'error'));
+        }
     }
 
     /**
