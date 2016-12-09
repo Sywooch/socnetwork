@@ -54,7 +54,7 @@ class UserFriends extends \app\components\extend\Model
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return User::find()->where(['id' => $this->user_id]);
     }
 
     /**
@@ -62,12 +62,22 @@ class UserFriends extends \app\components\extend\Model
      */
     public function getSender()
     {
-        return $this->hasOne(User::className(), ['id' => 'sender_id']);
+        return User::find()->where(['id' => $this->sender_id]);
     }
 
     public static function primaryKey()
     {
         return ['user_id', 'sender_id'];
+    }
+
+    public function getFriendOf($userId)
+    {
+        if ((int) $userId == (int) $this->sender_id) {
+            $u = $this->getUser()->one();
+        } else {
+            $u = $this->getSender()->one();
+        }
+        return $u;
     }
 
 }

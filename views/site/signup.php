@@ -3,6 +3,8 @@
 use app\components\extend\Html;
 use app\components\extend\ActiveForm;
 use app\components\widgets\uploader\UploaderWidget;
+use app\models\User;
+use app\models\forms\SignupForm;
 
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
@@ -31,10 +33,16 @@ $form = ActiveForm::begin([
         <?= $form->field($model, 'country') ?>
         <?= $form->field($model, 'city') ?>
         <?= $form->field($model, 'skype') ?>
-        <?= $form->field($model, 'gender')->radioList($model->getGenderLabels()) ?>
+        <?php
+        $model->gender = User::GENDER_MALE;
+        echo $form->field($model, 'gender')->radioList($model->getGenderLabels());
+        ?>
         <?= $form->field($model, 'about')->textarea() ?>
         <?= $form->field($model->user, 'avatar')->widget(UploaderWidget::className(), ['template' => '_default']); ?>
-        <?= $form->field($model, 'payment')->radioList($model->getPaymentTypeLabels()); ?>
+        <?php
+        $model->payment = SignupForm::PAYMENT_TYPE_CONTRIBUTION_AMMOUNT;
+        echo $form->field($model, 'payment')->radioList($model->getPaymentTypeLabels());
+        ?>
         <?=
         $form->field($model, 'agree', [
             'template' => '<div class="text-right col-md-2">{label}</div><div class="col-md-10">{input}{error}</div>',

@@ -36,8 +36,14 @@ $this->beginPage();
                 Pjax::end();
             }
             ?>
-            <div class="text-danger test-pjax-status" style="z-index: 1055;position: fixed;top: 0;right: 10px;top: 5px;font-weight: bolder!important;">
-            </div>
+            <?php
+            if (YII_ENV_DEV) {
+                echo Html::tag('div', '', [
+                    'style' => 'z-index: 1055;position:fixed;top: 0;right: 10px;font-size: 0.6em;top: 0;font-weight: bolder!important;color:#d66e6e!important;',
+                    'class' => 'test-pjax-status'
+                ]);
+            }
+            ?>
             <?php $this->endBody() ?>
         </div>
     </body>

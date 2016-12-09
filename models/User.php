@@ -507,10 +507,11 @@ class User extends \app\components\extend\Model implements IdentityInterface
      */
     public function getFriends()
     {
-        return UserFriends::find()->where('(user_id=:uid OR sender_id=:uid) AND status=:stat', [
+        $friends = UserFriends::find()->where('(user_id=:uid OR sender_id=:uid) AND status=:stat', [
                     'uid' => $this->id,
                     'stat' => UserFriends::STATUS_IS_FRIEND,
         ]);
+        return $friends;
     }
 
     /**
@@ -520,9 +521,11 @@ class User extends \app\components\extend\Model implements IdentityInterface
      */
     public function getIsFriendToMe($id)
     {
-        return $this->getFriends()->andWhere('(user_id=:ismyfriendid OR sender_id=:ismyfriendid)', [
-                    'ismyfriendid' => $this->id,
-                ])->one();
+        $f = $this->getFriends()->one();
+        /* @var $f UserFriends */
+        if ($f) {
+            return $f->getFriendOf($id);
+        }
     }
 
 }

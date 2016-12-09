@@ -48,14 +48,18 @@ $this->params['breadcrumbs'][] = yii::$app->l->t('User Friends');
             </div>
             <div class="row">
                 <?php
-                foreach ($user->getFriends()->all() as $friend) {
-                    $fuser = $friend->sender_id != $user->primaryKey ? $friend->getSender()->one() : $friend->getUser()->one();
-                    $favatar = '<span class="photo">' . $fuser->renderAvatar([
-                                'size' => File::SIZE_ORIGINAL
-                            ]) . '</span>';
-                    echo Html::tag('div', Html::a($favatar . $fuser->fullName, Url::to(['/user/view', 'id' => $fuser->primaryKey])), [
-                        'class' => 'col-md-6 col-sm-6 col-xs-4',
-                    ]);
+                $friends = $user->getFriends()->all();
+                if (count($friends) > 0) {
+                    foreach ($friends as $friend) {
+                        /* @var $friend \app\models\UserFriends */
+                        $fuser = $friend->getFriendOf($user->id);
+                        $favatar = '<span class="photo">' . $fuser->renderAvatar([
+                                    'size' => File::SIZE_ORIGINAL
+                                ]) . '</span>';
+                        echo Html::tag('div', Html::a($favatar . $fuser->fullName, Url::to(['/user/view', 'id' => $fuser->primaryKey])), [
+                            'class' => 'col-md-6 col-sm-6 col-xs-4',
+                        ]);
+                    }
                 }
                 ?>
 
@@ -104,7 +108,7 @@ $this->params['breadcrumbs'][] = yii::$app->l->t('User Friends');
                         <?= $user->getAttributeLabel('gender'); ?>
                     </div>
                     <div class="col-md-9 col-sm-9">
-                        <?= $user->getGenderLabels($user->gender); ?>
+                        <?= $user->getGenderLabels((int) $user->gender); ?>
                     </div>
                 </div>
             </li>
@@ -130,7 +134,7 @@ $this->params['breadcrumbs'][] = yii::$app->l->t('User Friends');
                 <li>
                     <div class="row">
                         <div class="col-md-2 col-sm-3 col-xs-3">
-                            <a href="#"><span class="photo"><img src="/img/user.jpg" alt=""></span></a>
+                            <a href="#"><span class="photo"><img src="/public/bps/img/user.jpg" alt=""></span></a>
                         </div>
                         <div class="col-md-10 col-sm-9 col-xs-9">
                             <div class="name">
@@ -148,7 +152,7 @@ $this->params['breadcrumbs'][] = yii::$app->l->t('User Friends');
                 <li>
                     <div class="row">
                         <div class="col-md-2 col-sm-3 col-xs-3">
-                            <a href="#"><span class="photo"><img src="/img/user.jpg" alt=""></span></a>
+                            <a href="#"><span class="photo"><img src="/public/bps/img/user.jpg" alt=""></span></a>
                         </div>
                         <div class="col-md-10 col-sm-9 col-xs-9">
                             <div class="name">
