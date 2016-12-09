@@ -34,6 +34,15 @@ class SignupForm extends Model
 
     /**
      * 
+     * @param mixed $gender
+     */
+    public function getGenderLabels($gender = null)
+    {
+        return $this->user->getGenderLabels($gender);
+    }
+
+    /**
+     * 
      * @param mixed $type
      */
     public function getPaymentTypeLabels($type = null)

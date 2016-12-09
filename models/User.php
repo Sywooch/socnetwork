@@ -46,6 +46,23 @@ class User extends \app\components\extend\Model implements IdentityInterface
 
     public $rbacRole;
 
+    const GENDER_MALE = 0;
+    const GENDER_FEMALE = 1;
+
+    /**
+     * 
+     * @param mixed $gender
+     */
+    public function getGenderLabels($gender = null)
+    {
+        $ar = [
+            self::GENDER_MALE => yii::$app->l->t('male'),
+            self::GENDER_FEMALE => yii::$app->l->t('female'),
+        ];
+
+        return $gender !== null ? $ar[$gender] : $ar;
+    }
+
     public function init()
     {
         parent::init();

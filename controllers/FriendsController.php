@@ -40,7 +40,7 @@ class FriendsController extends FrontendController
      */
     public function actionInvite($id)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel($id, false);
         if (!$model) {
             $model = new UserFriends();
             $model->user_id = (int) $id;
@@ -101,7 +101,7 @@ class FriendsController extends FrontendController
      * @return UserFriends the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($friendId)
+    protected function findModel($friendId, $throwError = true)
     {
         $q = UserFriends::find();
         $q->andWhere('(user_id=:uid AND sender_id=:sid) OR (sender_id=:uid AND user_id=:sid)', [
@@ -111,7 +111,9 @@ class FriendsController extends FrontendController
         if (($model = $q->one()) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            if ($throwError) {
+                throw new NotFoundHttpException('The requested page does not exist.');
+            }
         }
     }
 

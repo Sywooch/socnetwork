@@ -41,7 +41,7 @@ $form = ActiveForm::begin([
         <?= $form->field($model, 'country') ?>
         <?= $form->field($model, 'city') ?>
         <?= $form->field($model, 'skype') ?>
-        <?= $form->field($model, 'gender') ?>
+        <?= $form->field($model, 'gender')->radioList($model->getGenderLabels()); ?>
         <?= $form->field($model, 'about')->textarea() ?>
     </div>
 </div>
