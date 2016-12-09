@@ -46,24 +46,16 @@ $this->params['breadcrumbs'][] = yii::$app->l->t('User Friends');
                 <?= yii::$app->l->t('friends') ?> - <?= $user->getFriends()->count(); ?> <?= Html::a(yii::$app->l->t('all friends'), Url::to(['/friends'])) ?>
             </div>
             <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-4">
-                    <a href="#"><span class="photo"><img src="/img/user.jpg" alt=""></span>Аннита</a>
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-4">
-                    <a href="#"><span class="photo"><img src="/img/user.jpg" alt=""></span>Аннита</a>
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-4">
-                    <a href="#"><span class="photo"><img src="/img/user.jpg" alt=""></span>Аннита</a>
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-4">
-                    <a href="#"><span class="photo"><img src="/img/user.jpg" alt=""></span>Аннита</a>
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-4">
-                    <a href="#"><span class="photo"><img src="/img/user.jpg" alt=""></span>Аннита</a>
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-4">
-                    <a href="#"><span class="photo"><img src="/img/user.jpg" alt=""></span>Аннита</a>
-                </div>
+                <?php
+                foreach ($user->getFriends()->all() as $friend) {
+                    $fuser = $friend->sender_id != $user->primaryKey ? $friend->getSender()->one() : $friend->getUser()->one();
+                    $favatar = '<span class="photo">' . $fuser->renderAvatar() . '</span>';
+                    echo Html::tag('div', Html::a($favatar . $fuser->fullName, Url::to(['/user/view', 'id' => $fuser->primaryKey])), [
+                        'class' => 'col-md-6 col-sm-6 col-xs-4',
+                    ]);
+                }
+                ?>
+
             </div>
         </div>
     </div>
