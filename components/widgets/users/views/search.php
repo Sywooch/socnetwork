@@ -34,6 +34,7 @@ use app\components\extend\ListView;
                         'template' => '{input}'
                     ])->textInput(['placeholder' => $model->getAttributeLabel('last_name')])->label('')
                     ?>
+                    <?= Html::hiddenInput('userSearchWidget', '1') ?>
                 </div>
                 <div class="col-sm-1">
                     <?= Html::submitButton('OK', ['class' => 'btn btn-primary']) ?>

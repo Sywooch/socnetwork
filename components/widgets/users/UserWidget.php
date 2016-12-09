@@ -35,6 +35,7 @@ class UserWidget extends Widget
         switch ($this->view) {
             case 'search':
                 $userPost = yii::$app->request->post('User');
+                $isSearchWidget = yii::$app->request->post('userSearchWidget');
                 return $userPost ? $searchModel->searchPeople($userPost) : null;
         }
     }

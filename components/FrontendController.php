@@ -83,10 +83,8 @@ class FrontendController extends Controller
             $this->ajaxValidation($model);
             if ($model->save()) {
                 $this->setMessage('success');
-                return $this->refresh();
             } else {
                 $this->setMessage('error');
-                return $this->refresh();
             }
         }
     }
