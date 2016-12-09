@@ -4,6 +4,7 @@ use app\components\extend\Html;
 use app\components\extend\Nav;
 use app\components\extend\ListView;
 use app\components\extend\Url;
+use app\models\File;
 
 /* @var $this yii\web\View */
 /* @var $user \app\models\User */
@@ -19,7 +20,7 @@ $this->params['breadcrumbs'][] = yii::$app->l->t('User Friends');
         <div class="avatar">
             <?=
             $user->renderAvatar([
-                'size' => app\models\File::SIZE_MD
+                'size' => File::SIZE_ORIGINAL
             ]);
             ?>
         </div>
@@ -49,7 +50,9 @@ $this->params['breadcrumbs'][] = yii::$app->l->t('User Friends');
                 <?php
                 foreach ($user->getFriends()->all() as $friend) {
                     $fuser = $friend->sender_id != $user->primaryKey ? $friend->getSender()->one() : $friend->getUser()->one();
-                    $favatar = '<span class="photo">' . $fuser->renderAvatar() . '</span>';
+                    $favatar = '<span class="photo">' . $fuser->renderAvatar([
+                                'size' => File::SIZE_ORIGINAL
+                            ]) . '</span>';
                     echo Html::tag('div', Html::a($favatar . $fuser->fullName, Url::to(['/user/view', 'id' => $fuser->primaryKey])), [
                         'class' => 'col-md-6 col-sm-6 col-xs-4',
                     ]);

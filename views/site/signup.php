@@ -35,7 +35,11 @@ $form = ActiveForm::begin([
         <?= $form->field($model, 'about')->textarea() ?>
         <?= $form->field($model->user, 'avatar')->widget(UploaderWidget::className(), ['template' => '_default']); ?>
         <?= $form->field($model, 'payment')->radioList($model->getPaymentTypeLabels()); ?>
-        <?= $form->field($model, 'agree')->checkbox(['template' => '{input}{label}'], false)->label($model->getAttributeLabel('agree')); ?>
+        <?=
+        $form->field($model, 'agree', [
+            'template' => '<div class="text-right col-md-2">{label}</div><div class="col-md-10">{input}{error}</div>',
+        ])->checkbox([],false)->label($model->getAttributeLabel('agree'));
+        ?>
     </div>
 </div>
 <div class="row">

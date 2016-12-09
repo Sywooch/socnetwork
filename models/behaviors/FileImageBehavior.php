@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Description of SearchBehavior
  *
@@ -16,6 +17,7 @@ use yii\imagine\Image;
 
 class FileImageBehavior extends \yii\base\Behavior
 {
+
     /**
      * @inheritdoc
      */
@@ -89,7 +91,7 @@ class FileImageBehavior extends \yii\base\Behavior
 
         $src = $this->owner->getUrl(($size > File::SIZE_ORIGINAL ? $size : ''));
 
-        return ($src != $size && $src !== NULL) ? Html::img($src, $options) : File::getDefaultNoImage($options);
+        return ($src !== $size && $src !== NULL) ? Html::img($src, $options) : File::getDefaultNoImage($options);
     }
 
     public function getIcon($options = [])

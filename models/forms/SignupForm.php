@@ -68,10 +68,18 @@ class SignupForm extends Model
                 ['email', 'filter', 'filter' => 'trim'],
                 ['email', 'required'],
                 ['email', 'email'],
+                ['agree', 'checkAgreement'],
                 ['email', 'unique', 'targetClass' => 'app\models\User'],
                 ['password', 'required'],
                 ['password', 'string', 'min' => 6],
         ];
+    }
+
+    public function checkAgreement()
+    {
+        if ($this->agree != 1) {
+            $this->addError('agree', yii::$app->l->t('you need to agree with terms and conditions!'));
+        }
     }
 
     /**

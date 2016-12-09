@@ -3,6 +3,7 @@
 use app\components\extend\Html;
 use app\models\UserFriends;
 use app\components\extend\Url;
+use File;
 
 /* @var $model \app\models\UserFriends */
 $user = $model->user;
@@ -12,7 +13,11 @@ $user = $model->user;
         <div class="col-md-2 col-sm-2 col-xs-3">
             <a href="#">
                 <span class="photo">
-                    <?= $user->renderAvatar(); ?>
+                    <?=
+                    $user->renderAvatar([
+                        'size' => File::SIZE_ORIGINAL
+                    ]);
+                    ?>
                 </span>
             </a>
         </div>

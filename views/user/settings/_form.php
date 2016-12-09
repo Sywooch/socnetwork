@@ -27,7 +27,7 @@ $form = ActiveForm::begin([
             <div class="text-left col-md-10">
                 <?=
                 $model->renderAvatar([
-                    'size' => app\models\File::SIZE_LG
+                    'size' => app\models\File::SIZE_ORIGINAL
                 ]);
                 ?>
             </div>
