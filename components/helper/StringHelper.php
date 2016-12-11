@@ -51,4 +51,24 @@ class StringHelper
         return @$ar[$type] ? $ar[$type] : $type;
     }
 
+    /**
+     * encode base64 for url
+     * @param string $input
+     * @return string
+     */
+    function b64Encode($input)
+    {
+        return strtr(base64_encode($input), '+/=', '-_,');
+    }
+
+    /**
+     * decode base64 for url
+     * @param string $input
+     * @return string
+     */
+    function b64Decode($input)
+    {
+        return base64_decode(strtr($input, '-_,', '+/='));
+    }
+
 }

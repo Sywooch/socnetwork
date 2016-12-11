@@ -34,6 +34,7 @@ class UserController extends FrontendController
     public function actionSettings()
     {
         $model = yii::$app->user->identity;
+        $model->scenario = 'profile';
         $isSearchWidget = yii::$app->request->post('userSearchWidget');
         if (!$isSearchWidget) {
             if ($this->saveModel($model)) {

@@ -6,7 +6,7 @@ use app\components\extend\Url;
 use app\models\File;
 
 /* @var $model \app\models\UserFriends */
-$friend = $model->user_id == yii::$app->user->id ? $model->sender : $model->user;
+$friend = $model->user_id == $user->id ? $model->sender : $model->user;
 ?>
 <li>
     <div class="row">
@@ -32,33 +32,35 @@ $friend = $model->user_id == yii::$app->user->id ? $model->sender : $model->user
         </div>
         <div class="col-md-2 col-sm-3 col-xs-2">
             <?php
-            if ($model->status == UserFriends::STATUS_IS_FRIEND) {
-                echo Html::a('<span>' . yii::$app->l->t('delete friend') . '</span><i class="icon">delete</i>', '#', [
-                    'onclick' => 'Friends.delete($(this));return false;',
-                    'class' => 'remove',
-                    'data' => [
-                        'url' => Url::to(['delete', 'id' => $friend->primaryKey]),
-                        'confirm-message' => yii::$app->l->t('delete friend'),
-                    ]
-                ]);
-            } else {
-                $friendIsReceiver = ($model->sender_id != yii::$app->user->id);
-                echo $friendIsReceiver ? Html::a('<span>' . yii::$app->l->t('accept friend') . '</span><i class="icon">delete</i>', '#', [
-                            'onclick' => 'Friends.accept($(this));return false;',
-                            'class' => 'add',
-                            'data' => [
-                                'url' => Url::to(['accept', 'id' => $friend->primaryKey]),
-                                'confirm-message' => yii::$app->l->t('accept friend'),
-                            ]
-                        ]) : '';
-                echo Html::a('<span>' . yii::$app->l->t(($friendIsReceiver ? 'reject friend' : 'cancel request')) . '</span><i class="icon">delete</i>', '#', [
-                    'onclick' => 'Friends.reject($(this));return false;',
-                    'class' => 'remove',
-                    'data' => [
-                        'url' => Url::to([($friendIsReceiver ? 'reject' : 'cancel'), 'id' => $friend->primaryKey]),
-                        'confirm-message' => yii::$app->l->t('reject friend'),
-                    ]
-                ]);
+            if ($user->primaryKey == yii::$app->user->id) {
+                if ($model->status == UserFriends::STATUS_IS_FRIEND) {
+                    echo Html::a('<span>' . yii::$app->l->t('delete friend') . '</span><i class="icon">delete</i>', '#', [
+                        'onclick' => 'Friends.delete($(this));return false;',
+                        'class' => 'remove',
+                        'data' => [
+                            'url' => Url::to(['delete', 'id' => $friend->primaryKey]),
+                            'confirm-message' => yii::$app->l->t('delete friend'),
+                        ]
+                    ]);
+                } else {
+                    $friendIsReceiver = ($model->sender_id != yii::$app->user->id);
+                    echo $friendIsReceiver ? Html::a('<span>' . yii::$app->l->t('accept friend') . '</span><i class="icon">delete</i>', '#', [
+                                'onclick' => 'Friends.accept($(this));return false;',
+                                'class' => 'add',
+                                'data' => [
+                                    'url' => Url::to(['accept', 'id' => $friend->primaryKey]),
+                                    'confirm-message' => yii::$app->l->t('accept friend'),
+                                ]
+                            ]) : '';
+                    echo Html::a('<span>' . yii::$app->l->t(($friendIsReceiver ? 'reject friend' : 'cancel request')) . '</span><i class="icon">delete</i>', '#', [
+                        'onclick' => 'Friends.reject($(this));return false;',
+                        'class' => 'remove',
+                        'data' => [
+                            'url' => Url::to([($friendIsReceiver ? 'reject' : 'cancel'), 'id' => $friend->primaryKey]),
+                            'confirm-message' => yii::$app->l->t('reject friend'),
+                        ]
+                    ]);
+                }
             }
             ?>
         </div>

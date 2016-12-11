@@ -7,7 +7,7 @@
 
 namespace app\models\behaviors;
 
-use Yii;
+use yii;
 use yii\db\BaseActiveRecord;
 use yii\db\Expression;
 use app\components\extend\Html;

@@ -10,6 +10,7 @@ use app\components\extend\ActiveForm;
 use yii\helpers\Json;
 use app\components\extend\Html;
 use app\models\search\UserFriendsSearch;
+use app\models\User;
 
 /**
  * UserFriendsController implements the CRUD actions for UserFriends model.
@@ -21,17 +22,22 @@ class FriendsController extends FrontendController
      * Lists all UserFriends models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($id = null)
     {
         $model = new UserFriends;
+        $user = User::findById(($id === null ? yii::$app->user->id : (int) $id));
+        if (!$user) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
         $searchModel = new UserFriendsSearch();
-        $searchModel->user_id = yii::$app->user->id;
+        $searchModel->user_id = $user->primaryKey;
         $friends = $searchModel->searchFriends();
         $requests = $searchModel->searchRequests();
         return $this->render('index', [
                     'requests' => $requests,
                     'friends' => $friends,
                     'model' => $model,
+                    'user' => $user,
         ]);
     }
 

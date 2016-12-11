@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use Yii;
+use yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\web\IdentityInterface;
@@ -34,15 +34,20 @@ use settings\UserSettings;
  * @property integer $updated_at
  * @property string $password write-only password
  * @property string $avatar
+ * @property integer $referral
+ * @property integer $balance
+ * @property integer $paid_to_referrals
  */
 class User extends \app\components\extend\Model implements IdentityInterface
 {
 
+    const EVENT_PAY_TO_REFERRALS = 'EVENT_PAY_TO_REFERRALS';
     const STATUS_DELETED = 0;
     const STATUS_DISABLED = 1;
     const STATUS_ACTIVE = 10;
     const ROLE_USER = 1;
     const ROLE_ADMIN = 99;
+    const PAID_TO_REFERRALS = 1;
 
     public $rbacRole;
 
@@ -99,6 +104,7 @@ class User extends \app\components\extend\Model implements IdentityInterface
     public function behaviors()
     {
         return [
+            behaviors\user\UserReferralBehavior::className(),
             TimestampBehavior::className(),
             'settings' => [
                 'class' => settings\UserSettings::className(),
@@ -124,23 +130,23 @@ class User extends \app\components\extend\Model implements IdentityInterface
                 [['auth_key', 'password'], 'string', 'max' => 32],
                 ['status', 'default', 'value' => self::STATUS_ACTIVE],
                 ['role', 'default', 'value' => self::ROLE_USER],
-                [['username', 'email'], 'filter', 'filter' => 'trim'],
+                [['username', 'email', 'gender'], 'filter', 'filter' => 'trim'],
                 [['email'], 'unique', 'targetClass' => 'app\models\User'],
                 ['username', 'string', 'min' => 2, 'max' => 255],
-                ['email', 'filter', 'filter' => 'trim'],
+                [['email', 'balance', 'referral'], 'filter', 'filter' => 'trim'],
                 ['email', 'required'],
                 ['email', 'email'],
                 ['email', 'unique', 'targetClass' => 'app\models\User'],
                 ['password', 'string', 'min' => 6],
-                [['first_name', 'last_name', 'country', 'city', 'skype', 'gender', 'about'], 'string', 'max' => 200],
-                ['rbacRole', 'fakeRule'],
+                [['first_name', 'last_name', 'country', 'city', 'skype', 'about'], 'string', 'max' => 200],
+                [['rbacRole'], 'fakeRule'],
         ];
     }
 
     public function scenarios()
     {
         $scenarios = parent::scenarios();
-        $scenarios['profile'] = array_keys($this->attributeLabels(['status', 'role', 'rbacRole']));
+        $scenarios['profile'] = array_keys($this->attributeLabels(['balance', 'status', 'role', 'rbacRole']));
         return $scenarios;
     }
 
@@ -150,19 +156,21 @@ class User extends \app\components\extend\Model implements IdentityInterface
     public function attributeLabels($except = false)
     {
         $ar = [
-            'username' => yii::$app->l->t('username'),
+            //'username' => yii::$app->l->t('username'),
+            'avatar' => yii::$app->l->t('avatar'),
             'first_name' => yii::$app->l->t('first name'),
             'last_name' => yii::$app->l->t('last name'),
+            'email' => yii::$app->l->t('email'),
+            'balance' => yii::$app->l->t('balance'),
             'country' => yii::$app->l->t('country'),
             'city' => yii::$app->l->t('city'),
             'skype' => yii::$app->l->t('skype account'),
             'gender' => yii::$app->l->t('gender'),
             'about' => yii::$app->l->t('about me'),
             'password' => yii::$app->l->t('password'),
-            'email' => yii::$app->l->t('email'),
-            'avatar' => yii::$app->l->t('avatar'),
             'role' => yii::$app->l->t('role'),
             'rbacRole' => yii::$app->l->t('role'),
+            'referral' => yii::$app->l->t('referral'),
             'status' => yii::$app->l->t('status'),
         ];
         if ($except !== false && is_array($except))
@@ -211,7 +219,6 @@ class User extends \app\components\extend\Model implements IdentityInterface
 
     /**
      * Finds user by username
-     *
      * @param string $username
      * @return static|null
      */
@@ -221,14 +228,23 @@ class User extends \app\components\extend\Model implements IdentityInterface
     }
 
     /**
-     * Finds user by username
-     *
+     * Finds user by email
      * @param string $email
      * @return static|null
      */
     public static function findByEmail($email)
     {
         return static::findOne(['email' => trim($email), 'status' => self::STATUS_ACTIVE]);
+    }
+
+    /* Finds user by id
+     * @param string $id
+     * @return static|null
+     */
+
+    public static function findById($id)
+    {
+        return static::findOne(['id' => (int) $id, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -508,8 +524,8 @@ class User extends \app\components\extend\Model implements IdentityInterface
     public function getFriends()
     {
         $friends = UserFriends::find()->where('(user_id=:uid OR sender_id=:uid) AND status=:stat', [
-                    'uid' => $this->id,
-                    'stat' => UserFriends::STATUS_IS_FRIEND,
+            'uid' => $this->id,
+            'stat' => UserFriends::STATUS_IS_FRIEND,
         ]);
         return $friends;
     }
@@ -525,6 +541,46 @@ class User extends \app\components\extend\Model implements IdentityInterface
         /* @var $f UserFriends */
         if ($f) {
             return $f->getFriendOf($id);
+        }
+    }
+
+    /**
+     * get balance of the user
+     * @return type
+     */
+    public function getBalance()
+    {
+        return yii::$app->formatter->asCurrency((int) $this->balance, $this->getSetting('system_currency', 'USD'));
+    }
+
+    /**
+     * transfer from this user to user with certain id
+     * @param integer $userId
+     * @param integer $amount
+     * @return boolean
+     */
+    public function transferMoneyToUser($userId, $amount, $debug = false)
+    {
+        $user = self::findById($userId);
+        if (!$user) {
+            return false;
+        }
+        if ($this->balance < $amount) {
+            return false;
+        }
+        $transaction = yii::$app->db->beginTransaction();
+        $this->balance = $this->balance - (int) $amount;
+        $sent = $this->save();
+        $user->balance = $user->balance + (int) $amount;
+        $received = $user->save();
+        if ($sent && $received) {
+            return $transaction->commit();
+        }
+        $transaction->rollBack();
+        if ($debug) {
+            echo '<pre>' . print_r($user->getErrors(), TRUE) . '</pre>';
+            echo '<pre>' . print_r($this->getErrors(), TRUE) . '</pre>';
+            return;
         }
     }
 

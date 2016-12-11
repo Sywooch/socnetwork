@@ -79,6 +79,7 @@ class DefaultController extends AdminController
                 return $this->redirect(['login']);
             } else {
                 $this->setMessage('error');
+                return $this->refresh();
             }
         }
 

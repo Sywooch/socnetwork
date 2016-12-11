@@ -29,6 +29,11 @@ $this->params['menu'] = Nav::CrudActions($model);
                 'format' => 'raw',
                 'value' => $model->assignedRoles()
             ],
+            'balance' => [
+                'attribute' => 'balance',
+                'format' => 'raw',
+                'value' => $model->getBalance()
+            ],
             'status' => [
                 'attribute' => 'status',
                 'format' => 'raw',

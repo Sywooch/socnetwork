@@ -28,6 +28,7 @@ class SignupForm extends Model
     public $about;
     public $agree;
     public $payment;
+    public $referral;
 
     const PAYMENT_TYPE_SUBSCRIBER_PERIOD = 'subscriber_period';
     const PAYMENT_TYPE_CONTRIBUTION_AMMOUNT = 'contribution_ammount';
@@ -49,7 +50,9 @@ class SignupForm extends Model
     {
         $ar = [
             self::PAYMENT_TYPE_SUBSCRIBER_PERIOD => yii::$app->l->t('Subscriber period'),
-            self::PAYMENT_TYPE_CONTRIBUTION_AMMOUNT => yii::$app->l->t('The amount of contribution'),
+            self::PAYMENT_TYPE_CONTRIBUTION_AMMOUNT => yii::$app->l->t('The amount of contribution ({amount})', [
+                'amount' => yii::$app->formatter->asCurrency($this->user->getSetting('pay_on_signup_amount'), $this->user->getSetting('system_currency'))
+            ]),
         ];
 
         return $type !== null ? $ar[$type] : $ar;
@@ -74,7 +77,7 @@ class SignupForm extends Model
                 ['username', 'filter', 'filter' => 'trim'],
                 [['password', 'agree', 'first_name', 'last_name', 'email'], 'required'],
                 ['username', 'unique', 'targetClass' => 'app\models\User'],
-                [['email', 'gender', 'about', 'city', 'country', 'skype'], 'filter', 'filter' => 'trim'],
+                [['email', 'gender', 'about', 'city', 'country', 'skype', 'referral'], 'filter', 'filter' => 'trim'],
                 ['email', 'required'],
                 ['email', 'email'],
                 ['agree', 'checkAgreement'],
@@ -87,7 +90,7 @@ class SignupForm extends Model
     public function checkAgreement()
     {
         if ($this->agree != 1) {
-            $this->addError('agree', yii::$app->l->t('you need to agree with terms and conditions!'));
+            $this->addError('agree', yii::$app->l->t('you must agree with terms and conditions!'));
         }
     }
 
@@ -119,7 +122,9 @@ class SignupForm extends Model
         $user->country = $this->country;
         $user->city = $this->city;
         $user->gender = $this->gender;
+        $user->skype = $this->skype;
         $user->about = $this->about;
+        $user->referral = $this->referral;
         if ($this->validate() && $user->validate()) {
             $user->save();
             return $user;

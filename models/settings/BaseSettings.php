@@ -59,7 +59,7 @@ class BaseSettings extends SettingsBehavior
                 'label' => yii::$app->l->t('use pjax for frontend') . '&nbsp;',
                 'field' => Settings::FIELD_CHECKBOX,
                 'containerOptions' => ['class' => 'col-md-3'],
-                'value' => 0
+                'value' => 0,
             ],
         ];
         return $this->settings;

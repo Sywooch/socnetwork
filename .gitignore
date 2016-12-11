@@ -29,3 +29,4 @@ phpunit.phar
 /web/public/uploads/
 /config/params-local.php
 /docker/data/logs/
+/controllers/TestController.php

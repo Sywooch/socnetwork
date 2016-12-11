@@ -42,29 +42,16 @@ $this->params['breadcrumbs'][] = yii::$app->l->t('User Friends');
             }
         }
         ?>
-        <div class="profile-block">
-            <div class="head">
-                <?= yii::$app->l->t('friends') ?> - <?= $user->getFriends()->count(); ?> <?= Html::a(yii::$app->l->t('all friends'), Url::to(['/friends'])) ?>
-            </div>
-            <div class="row">
-                <?php
-                $friends = $user->getFriends()->all();
-                if (count($friends) > 0) {
-                    foreach ($friends as $friend) {
-                        /* @var $friend \app\models\UserFriends */
-                        $fuser = $friend->getFriendOf($user->id);
-                        $favatar = '<span class="photo">' . $fuser->renderAvatar([
-                                    'size' => File::SIZE_ORIGINAL
-                                ]) . '</span>';
-                        echo Html::tag('div', Html::a($favatar . $fuser->fullName, Url::to(['/user/view', 'id' => $fuser->primaryKey])), [
-                            'class' => 'col-md-6 col-sm-6 col-xs-4',
-                        ]);
-                    }
-                }
-                ?>
-
-            </div>
-        </div>
+        <?=
+        $this->render('index/_referral_link', [
+            'user' => $user
+        ]);
+        ?>
+        <?=
+        $this->render('index/_friends', [
+            'user' => $user
+        ]);
+        ?>
     </div>
     <div class="col-md-9 col-sm-7">
         <div class="title"><?= $user->fullName; ?> <span class="status online">Online</span></div>

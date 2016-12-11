@@ -15,6 +15,7 @@ use app\components\extend\ActiveForm;
 use yii\web\BadRequestHttpException;
 use app\models\File;
 use app\models\User;
+use app\components\helper\Helper;
 
 class SiteController extends FrontendController
 {
@@ -114,10 +115,11 @@ class SiteController extends FrontendController
         ]);
     }
 
-    public function actionSignup()
+    public function actionSignup($ref = null)
     {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post())) {
+            $model->referral = (int) Helper::str()->b64Decode($ref);
             $this->ajaxValidation($model);
             if ($user = $model->signup()) {
                 if (yii::$app->getUser()->login($user)) {

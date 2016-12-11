@@ -50,6 +50,12 @@ $this->params['menu'] = Nav::CrudActions($model);
                 'filterInputOptions' => GridView::defaultOptionsForFilterDropdown(),
             ],
             [
+                'attribute' => 'balance',
+                'value' => function($model, $key, $index, $column) {
+                    return $model->getBalance();
+                },
+            ],
+            [
                 'attribute' => 'status',
                 'value' => function($model, $key, $index, $column) {
                     return $model->getStatusLabels($model->status);

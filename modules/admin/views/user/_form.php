@@ -30,7 +30,7 @@ use app\models\User;
         <?= $form->field($model, 'country') ?>
         <?= $form->field($model, 'city') ?>
         <?= $form->field($model, 'skype') ?>
-        <?= $form->field($model, 'gender') ?>
+        <?= $form->field($model, 'gender')->radioList($model->getGenderLabels()) ?>
         <?= $form->field($model, 'about') ?>
 
         <?php if ($model->scenario != 'profile'): ?>
@@ -39,6 +39,7 @@ use app\models\User;
                 $model->status = User::STATUS_ACTIVE;
             }
             ?>
+            <?= $form->field($model, 'balance'); ?>
             <?= $form->field($model, 'status')->radioList($model->getStatusLabels(false, false)) ?>
             <?php if (yii::$app->user->can('rbac-assignment')): ?>
                 <?= $form->field($model, 'rbacRole')->checkboxList($model->getAvailableRoles()); ?>
