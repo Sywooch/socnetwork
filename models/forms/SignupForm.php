@@ -127,7 +127,9 @@ class SignupForm extends Model
         $user->referral = $this->referral;
         if ($this->validate() && $user->validate()) {
             $user->save();
-            $user->trigger(User::EVENT_PAY_TO_REFERRALS);
+            if ($this->payment == self::PAYMENT_TYPE_CONTRIBUTION_AMMOUNT) {
+                $user->trigger(User::EVENT_PAY_TO_REFERRALS);
+            }
             return $user;
         }
         return null;
