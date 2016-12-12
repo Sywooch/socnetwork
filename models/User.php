@@ -47,6 +47,7 @@ class User extends \app\components\extend\Model implements IdentityInterface
     const STATUS_ACTIVE = 10;
     const ROLE_USER = 1;
     const ROLE_ADMIN = 99;
+    const PAID_TO_REFERRALS_FALSE = 0;
     const PAID_TO_REFERRALS = 1;
 
     public $rbacRole;
@@ -574,7 +575,8 @@ class User extends \app\components\extend\Model implements IdentityInterface
         $user->balance = $user->balance + (int) $amount;
         $received = $user->save();
         if ($sent && $received) {
-            return $transaction->commit();
+            $transaction->commit();
+            return true;
         }
         $transaction->rollBack();
         if ($debug) {
@@ -582,6 +584,12 @@ class User extends \app\components\extend\Model implements IdentityInterface
             echo '<pre>' . print_r($this->getErrors(), TRUE) . '</pre>';
             return;
         }
+    }
+
+    public function getReferral()
+    {
+        $ref = self::findById($this->referral);
+        return $ref ? $ref->getFullName() : yii::$app->l->t('no');
     }
 
 }

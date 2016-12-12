@@ -34,6 +34,16 @@ $this->params['menu'] = Nav::CrudActions($model);
                 'format' => 'raw',
                 'value' => $model->getBalance()
             ],
+            'gender' => [
+                'attribute' => 'gender',
+                'format' => 'raw',
+                'value' => $model->getGenderLabels($model->gender)
+            ],
+            'referral' => [
+                'attribute' => 'referral',
+                'format' => 'raw',
+                'value' => $model->getReferral() . " id[$model->referral]"
+            ],
             'status' => [
                 'attribute' => 'status',
                 'format' => 'raw',
