@@ -77,7 +77,7 @@ class SignupForm extends Model
                 ['username', 'filter', 'filter' => 'trim'],
                 [['password', 'agree', 'first_name', 'last_name', 'email'], 'required'],
                 ['username', 'unique', 'targetClass' => 'app\models\User'],
-                [['email', 'gender', 'about', 'city', 'country', 'skype', 'referral'], 'filter', 'filter' => 'trim'],
+                [['email', 'payment', 'gender', 'about', 'city', 'country', 'skype', 'referral'], 'filter', 'filter' => 'trim'],
                 ['email', 'required'],
                 ['email', 'email'],
                 ['agree', 'checkAgreement'],
