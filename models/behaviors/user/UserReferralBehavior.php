@@ -89,7 +89,7 @@ class UserReferralBehavior extends \yii\base\Behavior
         $this->preparedPairReferralChild = User::find()->where([
                     'referral' => $referralID,
                     'status' => User::STATUS_ACTIVE,
-                    'paid_to_referrals' => User::PAID_TO_REFERRALS_FALSE,
+//                    'paid_to_referrals' => User::PAID_TO_REFERRALS_FALSE,
                 ])->andWhere('id!=:uid', ['uid' => $paier->primaryKey])->orderBy(['id' => SORT_DESC])->one();
         return $this->preparedPairReferralChild;
     }
