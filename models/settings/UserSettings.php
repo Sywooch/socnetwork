@@ -44,7 +44,7 @@ class UserSettings extends SettingsBehavior
                 'items' => Helper::user()->identity()->getAvailableRoles(),
             ],
             'pay_to_referals_amount' => [
-                'before' => '<div class="clearfix"></div>' . Html::tag('h3', yii::$app->l->t('payment settings')),
+                'before' => '<div class="clearfix"></div>' . Html::tag('h3', yii::$app->l->t('payment settings')) . Html::tag('h4', yii::$app->l->t('contribution')),
                 'label' => yii::$app->l->t('amount to pay to referrals'),
                 'value' => 150,
                 'field' => Settings::FIELD_TEXT,
@@ -61,11 +61,26 @@ class UserSettings extends SettingsBehavior
             ],
             'admin_payment_receiver_id' => [
                 'label' => yii::$app->l->t('user id that will receive paiments as {appname} admin', [
-                    'appname' => yii::$app->name
+                    'appname' => 'site'
                 ]),
                 'value' => (($user = User::findByUsername('admin')) ? $user->primaryKey : 0),
                 'field' => Settings::FIELD_TEXT,
-                'after' => '<div class="clearfix"></div><br/>'
+            ],
+            'subscribe_price' => [
+                'before' => '<div class="clearfix"></div>' . Html::tag('h4', yii::$app->l->t('subscription')),
+                'label' => yii::$app->l->t('subscription price'),
+                'value' => 60,
+                'field' => Settings::FIELD_TEXT,
+            ],
+            'subscribe_admin_bonus' => [
+                'label' => yii::$app->l->t('admin bonus'),
+                'value' => 30,
+                'field' => Settings::FIELD_TEXT,
+            ],
+            'subscribe_referral_bonus' => [
+                'label' => yii::$app->l->t('user bonus'),
+                'value' => 5,
+                'field' => Settings::FIELD_TEXT,
             ],
             'system_currency' => [
                 'label' => yii::$app->l->t('system currency') . '&nbsp;',

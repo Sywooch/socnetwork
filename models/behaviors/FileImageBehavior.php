@@ -90,6 +90,9 @@ class FileImageBehavior extends \yii\base\Behavior
         $size = array_key_exists('size', $options) ? $options['size'] : File::SIZE_LG;
 
         $src = $this->owner->getUrl(($size > File::SIZE_ORIGINAL ? $size : ''));
+        if ($size == File::SIZE_ORIGINAL) {
+            $options['wrapIntoBg'] = true;
+        }
 
         return ($src !== $size && $src !== NULL) ? Html::img($src, $options) : File::getDefaultNoImage($options);
     }

@@ -42,6 +42,7 @@ class User extends \app\components\extend\Model implements IdentityInterface
 {
 
     const EVENT_PAY_TO_REFERRALS = 'EVENT_PAY_TO_REFERRALS';
+    const EVENT_APPLY_BONUS = 'EVENT_APPLY_BONUS';
     const STATUS_DELETED = 0;
     const STATUS_DISABLED = 1;
     const STATUS_ACTIVE = 10;
@@ -415,6 +416,14 @@ class User extends \app\components\extend\Model implements IdentityInterface
         $this->saveRbacRoles();
     }
 
+    public function afterDelete()
+    {
+        parent::afterDelete();
+        UserFriends::deleteAll('user_id=:uid OR sender_id=:uid', [
+            'uid' => $this->primaryKey
+        ]);
+    }
+
     public function saveRbacRoles()
     {
         $defaultRole = $this->getSetting('default_user_role');
@@ -560,7 +569,7 @@ class User extends \app\components\extend\Model implements IdentityInterface
      * @param integer $amount
      * @return boolean
      */
-    public function transferMoneyToUser($userId, $amount, $debug = false)
+    public function transferMoneyToUser($userId, $amount, $safe = true)
     {
         $user = self::findById($userId);
         if (!$user) {
@@ -569,17 +578,23 @@ class User extends \app\components\extend\Model implements IdentityInterface
         if ($this->balance < $amount) {
             return false;
         }
-        $transaction = yii::$app->db->beginTransaction();
+        if ($safe) {
+            $transaction = yii::$app->db->beginTransaction();
+        }
         $this->balance = $this->balance - (int) $amount;
         $sent = $this->save();
         $user->balance = $user->balance + (int) $amount;
         $received = $user->save();
         if ($sent && $received) {
-            $transaction->commit();
+            if ($safe) {
+                $transaction->commit();
+            }
             return true;
         }
-        $transaction->rollBack();
-        if ($debug) {
+        if ($safe) {
+            $transaction->rollBack();
+        }
+        if (YII_ENV_DEV) {
             echo '<pre>' . print_r($user->getErrors(), TRUE) . '</pre>';
             echo '<pre>' . print_r($this->getErrors(), TRUE) . '</pre>';
             return;

@@ -24,16 +24,12 @@ $form = ActiveForm::begin([
                     <?= $model->getAttributeLabel('avatar'); ?>
                 </label>
             </div>
-            <div class="text-left col-md-10">
-                <?=
-                $model->renderAvatar([
-                    'size' => app\models\File::SIZE_ORIGINAL
-                ]);
-                ?>
+            <div class="text-left col-md-4">
+                <?= $model->renderAvatar(['size' => app\models\File::SIZE_ORIGINAL]); ?>
             </div>
         </div>
-        <div class="clearfix"></div>
         <?= $form->field($model, 'avatar')->widget(UploaderWidget::className(), ['template' => '_default'])->label(''); ?>
+        <div class="clearfix"></div>
         <?= $form->field($model, 'first_name') ?>
         <?= $form->field($model, 'last_name') ?>
         <?= $form->field($model, 'email') ?>

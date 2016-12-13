@@ -46,6 +46,16 @@ class UserController extends FrontendController
         ]);
     }
 
+    public function actionTeam()
+    {
+        $model = yii::$app->user->identity;
+        $team = $model->getBestFromTeam();
+        return $this->render('team', [
+                    'model' => $model,
+                    'team' => $team,
+        ]);
+    }
+
     /**
      * Finds the UserFriends model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

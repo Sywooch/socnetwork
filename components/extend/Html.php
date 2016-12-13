@@ -62,4 +62,20 @@ class Html extends yii\bootstrap\Html
         return parent::beginForm($action, $method, $options);
     }
 
+    /**
+     * @inheritdoc
+     */
+    public static function img($src, $options = array())
+    {
+        self::addCssClass($options, 'img');
+        if (array_key_exists('wrapIntoBg', $options)) {
+            $img = parent::img($src, ['style' => 'visibility:hidden;position:relative']);
+            $options['style'] = 'background: url("' . $src . '");background-repeat: no-repeat;background-position: 50%;height: 100%;width: 100%;display: inline-block;background-size: cover;';
+            $wraped = self::tag('div', $img, $options);
+            return $wraped;
+        } else {
+            return parent::img($src, $options);
+        }
+    }
+
 }

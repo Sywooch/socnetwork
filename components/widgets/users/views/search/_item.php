@@ -2,6 +2,7 @@
 
 use app\components\extend\Html;
 use app\components\extend\Url;
+use app\models\File;
 
 /* @var $model \app\models\User */
 ?>
@@ -9,7 +10,7 @@ use app\components\extend\Url;
 <li>
     <a href="<?= Url::to(['/user/view', 'id' => $model->primaryKey]) ?>">
         <span class="photo photo-50">
-            <?= $model->renderAvatar(); ?>
+            <?= $model->renderAvatar(['size' => File::SIZE_ORIGINAL]); ?>
         </span>
         <span>
             <?= $model->fullName; ?>

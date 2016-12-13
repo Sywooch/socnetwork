@@ -4,6 +4,7 @@ use app\components\extend\Html;
 use app\components\extend\Url;
 use app\components\helper\Helper;
 use app\components\widgets\users\UserWidget;
+use app\models\File;
 
 $user = Helper::user()->identity();
 
@@ -20,7 +21,7 @@ $user = Helper::user()->identity();
     if (!yii::$app->user->isGuest) {
         echo Html::a(Html::tag('span', $user->fullName, [
                     'class' => 'name'
-                ]) . Html::tag('span', $user->renderAvatar(), [
+                ]) . Html::tag('span', $user->renderAvatar(['size' => File::SIZE_ORIGINAL]), [
                     'class' => 'photo photo-40'
                 ]), Url::to(['/user/index']));
 
