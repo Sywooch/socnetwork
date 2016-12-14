@@ -31,7 +31,9 @@ $this->params['pageHeader'] = $this->title;
     ];
     $items = [];
     $index = 1;
-    foreach ($team->limit(32)->orderBy(["countReferrals" => SORT_DESC])->all() as $u) {
+    $teamUsers = $team->limit(30)->orderBy(["countReferrals" => SORT_DESC])->all();
+    $teamUsers = array_merge([$model],$teamUsers);
+    foreach ($teamUsers as $u) {
         if ($step > 5) {
             break;
         }
